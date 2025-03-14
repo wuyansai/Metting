@@ -1,9 +1,3 @@
-/*
-
-左边的视频列表窗口
-
-*/
-
 #pragma once
 #include <QWidget>
 #include <QListWidget>
