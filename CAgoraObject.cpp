@@ -3,7 +3,6 @@
 #include <QMessageBox>
 #include <QProcess>
 
-//Specify your APP ID here
 #define APPID ""
 #define APP_TOKEN   ""
 
@@ -47,12 +46,9 @@ int CAgoraObject::init()
 	m_rtcEngine = createAgoraRtcEngine();
 	m_eventHandler.reset(new AgoraRtcEngineEvent(*this));
 
-    // Declare a RTC engine context
     agora::rtc::RtcEngineContext context;
-    // Retrieve event handler
     context.eventHandler = m_eventHandler.get();
     QByteArray temp;
-    // Pass appId to the context
     if (strlen(APPID))
         context.appId = APPID;
     else {
@@ -71,7 +67,6 @@ int CAgoraObject::init()
         process.startDetached("notepad.exe", { "D:/agora_account/AgoraConfigOpenVideoCall.ini" }, "");
         ExitProcess(0);
     }
-    // initialize the RtcEngine with the context
     if (0 != m_rtcEngine->initialize(context))
     {
         return -1;
@@ -88,7 +83,7 @@ int CAgoraObject::release()
 {
     if (m_rtcEngine)
     {
-        // Í¬²½¡¢Òì²½
+        // åŒæ­¥ã€å¼‚æ­¥
         m_rtcEngine->release(true);
         m_rtcEngine = nullptr;
     }
@@ -102,18 +97,14 @@ int CAgoraObject::joinChannel(const QString& channel, uint uid)
         QMessageBox::warning(nullptr, ("AgoraHighSound"), ("channelname is empty"));
         return -1;
     }
-    // Strarts local video preview
     m_rtcEngine->startPreview();
 
     QString token = gAgoraConfig.getAppToken();
 
-    // Parameters are: token channelId, optionalInfo, uid
-    // https://docs.agora.io/en/Video/API%20Reference/cpp/classagora_1_1rtc_1_1_i_rtc_engine.html#a3eb5ee494ce124b34609c593719c89ab
     int r = m_rtcEngine->joinChannel(token.toUtf8().data(), channel.toUtf8().data(), nullptr, uid);
     return r;
 }
 
-// Plays the local video
 BOOL CAgoraObject::LocalVideoPreview(HWND hVideoWnd, BOOL bPreviewOn, RENDER_MODE_TYPE renderType/* = RENDER_MODE_TYPE::RENDER_MODE_FIT*/)
 {
     int nRet = 0;
@@ -134,7 +125,6 @@ BOOL CAgoraObject::LocalVideoPreview(HWND hVideoWnd, BOOL bPreviewOn, RENDER_MOD
     return nRet == 0 ? TRUE : FALSE;
 }
 
-// Plays the remote video
 BOOL CAgoraObject::RemoteVideoRender(uid_t uid, HWND hVideoWnd, RENDER_MODE_TYPE renderType/* = RENDER_MODE_TYPE::RENDER_MODE_HIDDEN*/)
 {
     int nRet = 0;
@@ -215,12 +205,12 @@ int CAgoraObject::start_share_screen(int type, void* hwnd)
 
     if (type == 0)  // sceen
     {
-        // ¹²Ïí×ÀÃæ
+        // å…±äº«æ¡Œé¢
         return m_rtcEngine->startScreenCaptureByDisplayId(0, regionRect, captureParams);
     }
     else if (type == 1) //app
     {
-        // ¹²Ïí´°¿Ú
+        // å…±äº«çª—å£
         return m_rtcEngine->startScreenCaptureByWindowId(hwnd, regionRect, captureParams);
     }
   
